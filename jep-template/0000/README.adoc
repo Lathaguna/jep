@@ -1,4 +1,4 @@
-= JEP-0000: :bulb: Title :bulb:
+= JEP-0000: Audit Log Plugin
 :toc: preamble
 :toclevels: 3
 ifdef::env-github[]
@@ -9,27 +9,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-.**JEP Template**
-[TIP]
-====
-In this document, all text in a "Tip" block (or inline text with with a ":bulb:" on either side)
-MUST be removed and/or replaced with text appropriate to this JEP before submission.
-
-Sections may include aditional help and advice in comments.
-":bulb:" entries in comments only need to be filled in if that text is uncommented.
-
-See https://github.com/jenkinsci/jep/blob/master/jep/1/README.adoc[JEP-1] for full and accurate description of the JEP process and what is required in each section.
-====
-
-[TIP]
-====
-*BDFL-Delegate* is uncommented by default.
-As part of the in initial conversation or the JEP submission the sponsor should
-look for a BDFL Delegate.
-While not required, it is better for the community if Delegates perform most reviews.
-If no suitable BDFL-Delegate can be found, that row may be commented out.
-====
-
 .Metadata
 [cols="1h,1"]
 |===
@@ -37,29 +16,29 @@ If no suitable BDFL-Delegate can be found, that row may be commented out.
 | 0000
 
 | Title
-| :bulb: Title :bulb:
+| Audit Log Plugin
 
 | Sponsor
-| :bulb: Link to github user page (if multiple, comma separated on one line). Example: link:https://github.com/username[User Name], link:https://github.com/username2[User Name 2] :bulb:
+| link:https://github.com/jvz[Matt Sicker]
 
 // Use the script `set-jep-status <jep-number> <status>` to update the status.
 | Status
 | Not Submitted :information_source:
 
 | Type
-| :bulb: Standards, Informational, or Process :bulb:
+| Informational
 
 | Created
-| :bulb: Date (YYYY-MM-DD) :bulb:
+| 2019-03-10
 
-| BDFL-Delegate
-| TBD
+//| BDFL-Delegate
+//| TBD
 
 //
 //
 // Uncomment if there is an associated placeholder JIRA issue.
-//| JIRA
-//| :bulb: https://issues.jenkins-ci.org/browse/JENKINS-nnnnn[JENKINS-nnnnn] :bulb:
+| JIRA
+| https://issues.jenkins-ci.org/browse/JENKINS-54082[JENKINS-54082]
 //
 //
 // Uncomment if discussion will occur in forum other than jenkinsci-dev@ mailing list.
@@ -85,131 +64,50 @@ If no suitable BDFL-Delegate can be found, that row may be commented out.
 
 == Abstract
 
-[TIP]
-====
-Give a short (200 word) description of the technical issue addressed.
-
-* Use present tense - describe what the proposal "does" (as if it were already done) not what it will do.
-* Do not go into technical details, those go in the Specification section.
-* Do not talk about history or why this needs to be done, that is part of Motivation section.
-====
+Audit Log Plugin introduces a standardized way for creating an audit log of Jenkins and plugins using Apache Log4j Audit. The plugin contains predefined audit events to configure it along with any additional extension points or upstream Jenkins Core modifications to support auditing.
 
 == Specification
 
-[TIP]
-====
-Provide a detailed specification what is being proposed.
-Be as technical and detailed as needed to allow new or existing Jenkins developers
-to reasonably understand the scope/impact of an implementation.
+Audit Log Plugin lays the foundation and provides an unifying way for easily instrumenting more subsystems and plugins with audit logs.
 
-* Use present tense - describe what the proposal "does" (as if it were already done) not what it will do.
-* Do not discuss alternative designs that were rejected, those belong in the Reasoning section.
-* Avoid in-depth discussion or justification of design choices, that belongs in the Reasoning section.
-====
+It has predefined audit events that are very common in the Jenkins scenario. It uses Apache Log4j Audit and thus contains a `log4j2.xml` file that allows more complex audit logging configurations. Also the destination of logs can be modified according to the user requirement using a configuration UI.
+
+.Available Audit events:
+* User creation
+* User login
+* User logout
+* User property changes
+* Start of the build
+
 
 == Motivation
 
-[TIP]
-====
-Explain why the existing code base or process is inadequate to address the problem that the JEP solves.
-This section may also contain any historal context such as how things were done before this proposal.
-
-* Do not discuss design choices or alternative designs that were rejected, those belong in the Reasoning section.
-====
+Audit Log Plugin helps to keep a log of who performed particular Jenkins related operations along with the events happening around that. While this type of feature is addressed by other existing plugins, there is no unifying way for plugins to contribute their own actions.
 
 == Reasoning
 
-[TIP]
-====
-Explain why particular design decisions were made.
-Describe alternate designs that were considered and related work, e.g. how the feature is supported in other systems.
-Provide evidence of consensus within the community and discuss important objections or concerns raised during discussion.
-
-* Use sub-headings to organize this section for ease of readability.
-* Do not talk about history or why this needs to be done, that is part of Motivation section.
-====
+[Questions?]
+The Jenkins core modification part comes here, is it?
 
 == Backwards Compatibility
 
-[TIP]
-====
-Describe any incompatibilities and their severity.
-Describe how the JEP proposes to deal with these incompatibilities.
 
-If there are no backwards compatibility concerns, this section may simply say:
-There are no backwards compatibility concerns related to this proposal.
-====
 
 == Security
 
-[TIP]
-====
-Describe the security impact of this proposal.
-Outline what was done to identify and evaluate security issues,
-discuss of potential security issues and how they are mitigated or prevented,
-and how the JEP interacts with existing permissions, authentication, authorization, etc.
 
-If this proposal will have no impact on security, this section may simply say:
-There are no security risks related to this proposal.
-====
 
 == Infrastructure Requirements
 
-[TIP]
-====
-Describe any impact on Jenkins project infrastructure.
 
-Include any additions or changes, interactions with exiting components,
-potential instabilities, service-level agreements,
-and responsibilities for continuing maintenance.
-Explain the scope of infrastructure changes with sufficient detail
-to allow initial and on-going cost (in both time and money) to be estimated.
-
-If this proposal will have no impact on infrastructure, this section may simply say:
-There are no new infrastructure requirements related to this proposal.
-====
 
 == Testing
 
-[TIP]
-====
-If the JEP involves any kind of behavioral change to code
-(whether in a Jenkins product or backend infrastructure),
-give a summary of how its correctness (and, if applicable, compatibility, security, etc.) can be tested.
 
-In the preferred case that automated tests can be developed to cover all significant changes, simply give a short summary of the nature of these tests.
-
-If some or all of changes will require human interaction to verify, explain why automated tests are considered impractical.
-Then summarize what kinds of test cases might be required: user scenarios with action steps and expected outcomes.
-Might behavior vary by platform (operating system, servlet container, web browser, etc.)?
-Are there foreseeable interactions between different permissible versions of components (Jenkins core, plugins, etc.)?
-Are any special tools, proprietary software, or online service accounts required to exercise a related code path (Active Directory server, GitHub login, etc.)?
-When will testing take place relative to merging code changes, and might retesting be required if other changes are made to this area in the future?
-
-If this proposal requires no testing, this section may simply say:
-There are no testing issues related to this proposal.
-====
 
 == Prototype Implementation
 
-[TIP]
-====
-Link to any open source reference implementation of code changes for this proposal.
-The implementation need not be completed before the JEP is
-link:https://github.com/jenkinsci/jep/tree/master/jep/1#accepted[accepted],
-but must be completed before any JEP is given
-"link:https://github.com/jenkinsci/jep/tree/master/jep/1#final[Final]" status.
 
-JEPs which will not include code changes may omit this section.
-====
 
 == References
-
-[TIP]
-====
-Provide links to any related documents.
-This will include links to discussions on the mailing list, pull requests, and meeting notes.
-====
-
-
 
